@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface RentRepository extends JpaRepository<Rent, Long> {
 
-    @Query(value = "SELECT * FROM rents WHERE rents.id = ?1", nativeQuery = true)
+    @Query(value = "SELECT new Rent(r.id, r.row, r.place, r.isRent, r.statusRent, r.movie) FROM Rent r WHERE r.id = ?1")
     Rent getById(@Param("id") long id);
 
 

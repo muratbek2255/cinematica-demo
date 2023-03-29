@@ -3,16 +3,19 @@ package com.example.transactionpractice.service;
 
 import com.example.transactionpractice.dto.PaymentCheckRequest;
 import com.example.transactionpractice.dto.PaymentRequest;
-import com.example.transactionpractice.dto.RentResponse;
 import com.example.transactionpractice.entity.Payment;
 import com.example.transactionpractice.entity.PaymentStatus;
 import com.example.transactionpractice.entity.Rent;
+import com.example.transactionpractice.entity.StatusRent;
 import com.example.transactionpractice.repository.PaymentRepository;
+import com.example.transactionpractice.repository.RentRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Date;
 
 
 @Service
@@ -20,12 +23,13 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
 
-    private final RentServiceImpl rentService;
+    private final RentRepository rentRepository;
+
 
     @Autowired
-    public PaymentServiceImpl(PaymentRepository paymentRepository, RentServiceImpl rentService) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository, RentRepository rentRepository) {
         this.paymentRepository = paymentRepository;
-        this.rentService = rentService;
+        this.rentRepository = rentRepository;
     }
 
 
@@ -52,38 +56,75 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public String addStatus(PaymentRequest paymentRequest, long id) {
+    public String addPayment(PaymentRequest paymentRequest, long id) {
 
         Payment payment = paymentRepository.getById(id);
+
+        Rent rent = rentRepository.getById(paymentRequest.getRentRequest().getId());
 
         if(payment.getIsChecked().equals(Boolean.TRUE)) {
 
             payment.setStatus(PaymentStatus.STATUS_CREATED);
             payment.setCreated_at(Timestamp.from(Instant.now()));
             payment.setFinished(Boolean.FALSE);
+            payment.setRent(rent);
             payment.setSumOfFavour(paymentRequest.getPrice());
             payment.setAccountCheck(paymentRequest.getAccountCheck());
 
             paymentRepository.save(payment);
 
             return "Payment Created";
-        }else {
+
+        } else {
             return "You have some with problem with AccountCheck or SumOfFavour";
         }
     }
 
     @Override
-    public String setStatus(long id) {
-        return null;
+    public String setPayment(long id) {
+        Payment payment = paymentRepository.getById(id);
+
+        payment.setFinished(Boolean.TRUE);
+
+        if(payment.getFinished() == Boolean.TRUE) {
+            payment.setStatus(PaymentStatus.STATUS_SUCCESS);
+            payment.getRent().setStatusRent(StatusRent.YOURRENT);
+        }
+
+        payment.setUpdated_at(Timestamp.from(Instant.now()));
+
+        paymentRepository.save(payment);
+
+        return "Your status in payment: " + payment.getStatus();
     }
 
     @Override
     public String rollbackPayment(long id) {
-        return null;
-    }
 
-    @Override
-    public String getByStatus(String status) {
-        return null;
+        Payment payment = paymentRepository.getById(id);
+
+        switch (payment.getStatus()) {
+            case STATUS_SUCCESS -> {
+                long Milli = Math.abs(payment.getUpdated_at().getTime() - new Date().getTime());
+
+                if(Milli < 1080000) {
+                    payment.setStatus(PaymentStatus.STATUS_ROLLBACK);
+                    payment.setUpdated_at(Timestamp.from(Instant.now()));
+                    paymentRepository.save(payment);
+                    return "Payment Rollbacked";
+                }
+                else return "3 days gone";
+
+            }
+            case STATUS_CREATED -> {
+                payment.setStatus(PaymentStatus.STATUS_ROLLBACK);
+                payment.setUpdated_at(Timestamp.from(Instant.now()));
+                paymentRepository.save(payment);
+                return "Payment Rollbacked";
+            }
+            default -> {
+                return "You dont have payment or your status fail";
+            }
+        }
     }
 }

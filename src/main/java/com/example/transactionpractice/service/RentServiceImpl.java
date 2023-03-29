@@ -22,10 +22,18 @@ public class RentServiceImpl implements RentService{
     public RentResponse getById(long id) {
 
         Rent rent = rentRepository.getById(id);
+        System.out.println(rent.getStatusRent());
 
-        return new RentResponse(
-                rent.getId(), rent.getRow(), rent.getPlace(),
-                rent.getIsRent(), rent.getStatusRent(), rent.getMovie());
+        var rentResponse = new RentResponse();
+
+        rentResponse.setId(rent.getId());
+        rentResponse.setRow(rent.getRow());
+        rentResponse.setPlace(rent.getPlace());
+        rentResponse.setIsRent(rent.getIsRent());
+        rentResponse.setStatusRent(rent.getStatusRent());
+        rentResponse.setMovie(rent.getMovie());
+
+        return rentResponse;
     }
 
     @Override
@@ -43,7 +51,7 @@ public class RentServiceImpl implements RentService{
             default -> {
                 rent.setStatusRent(StatusRent.IN_PROGRESS);
                 rentRepository.save(rent);
-                return "Status is FREE";
+                return "Status in Progress";
             }
         }
     }
@@ -54,6 +62,7 @@ public class RentServiceImpl implements RentService{
         Rent rent = rentRepository.getById(id);
 
         if(rent.getStatusRent().equals(StatusRent.IN_PROGRESS)) {
+            rent.setIsRent(Boolean.TRUE);
             rent.setStatusRent(StatusRent.FREE);
         }
 

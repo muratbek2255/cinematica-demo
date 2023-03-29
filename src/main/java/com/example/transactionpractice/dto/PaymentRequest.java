@@ -15,5 +15,5 @@ public class PaymentRequest {
 
     private String accountCheck;
 
-    private Rent rentRequest;
+    private RentRequest rentRequest;
 }

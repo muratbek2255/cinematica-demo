@@ -30,6 +30,7 @@ public class Rent {
     Boolean isRent;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     StatusRent statusRent;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

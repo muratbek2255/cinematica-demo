@@ -25,7 +25,7 @@ public class Cinema {
     @Column(name = "name")
     String name;
 
-    @Column(name = "repertoire_of_sessions")
+    @Column(name = "reportoireofsessions")
     Date reportoireOfSessions;
 
     @Column(name = "likes")
