@@ -9,7 +9,7 @@ import com.example.transactionpractice.entity.Rent;
 import com.example.transactionpractice.entity.StatusRent;
 import com.example.transactionpractice.repository.PaymentRepository;
 import com.example.transactionpractice.repository.RentRepository;
-import jakarta.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -123,7 +123,7 @@ public class PaymentServiceImpl implements PaymentService {
                 return "Payment Rollbacked";
             }
             default -> {
-                return "You dont have payment or your status fail";
+                return "You don't have payment or your status fail";
             }
         }
     }
