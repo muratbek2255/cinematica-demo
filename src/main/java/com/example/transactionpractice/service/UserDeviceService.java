@@ -6,7 +6,7 @@ import com.example.transactionpractice.entity.token.RefreshToken;
 
 import java.util.Optional;
 
-public interface UserDetailService {
+public interface UserDeviceService {
 
     public Optional<UserDevice> findDeviceByUserId(Long userId, String deviceId);
 

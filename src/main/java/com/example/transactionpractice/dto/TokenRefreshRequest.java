@@ -1,17 +1,14 @@
 package com.example.transactionpractice.dto;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
 
 @Getter
 @Setter
-@AllArgsConstructor
-public class AuthenticationResponse {
-
-    private String token;
+@RequiredArgsConstructor
+public class TokenRefreshRequest {
 
     private String refreshToken;
 

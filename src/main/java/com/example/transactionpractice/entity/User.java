@@ -64,6 +64,9 @@ public class User implements UserDetails {
     @Column(name = "first_time_login")
     Timestamp firstTimeLogin;
 
+    public User(User user) {
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
