@@ -67,7 +67,11 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setUserRole(UserRole.USER);
         user.setCreatedAt(Timestamp.from(Instant.now()));
-
+        user.setIsAccountExpired(Boolean.TRUE);
+        user.setActive(Boolean.TRUE);
+        user.setIsAccountLocked(Boolean.TRUE);
+        user.setEnabled(Boolean.TRUE);
+        user.setIsTwilioVerified(Boolean.FALSE);
 
         userRepository.save(user);
 
@@ -83,19 +87,11 @@ public class AuthenticationService {
         return authenticationResponse;
     }
 
-    public AuthenticationResponse authentication(AuthenticationRequest authenticationRequest) {
+    public Authentication authentication(AuthenticationRequest authenticationRequest) {
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
+        return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                 authenticationRequest.getPassword()));
 
-        var user = userRepository.findByPhoneNumber(authenticationRequest.getUsername());
-
-        var jwtToken = jwtUtils.generateToken(user);
-        var refreshToken = generateToken(user);
-
-        AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwtToken, refreshToken);
-
-        return authenticationResponse;
     }
 
     public Optional<String> refreshJwtToken(TokenRefreshRequest tokenRefreshRequest) {

@@ -46,23 +46,21 @@ public class User implements UserDetails {
     @Column(name = "credentials_expiry_date")
     LocalDateTime credentialsExpiryDate;
 
-    @Column(name = "is_account_expired")
+    @Column(name = "is_account_non_expired")
     Boolean isAccountExpired;
 
-    @Column(name = "is_account_locked")
+    @Column(name = "is_account_non_locked")
     Boolean isAccountLocked;
 
     @Column(name = "is_active", nullable = false)
     private Boolean active;
 
-    @Column(name = "enabled")
+    @Column(name = "is_enabled")
     Boolean enabled;
 
     @Column(name = "is_twilio_verified")
     Boolean isTwilioVerified;
 
-    @Column(name = "first_time_login")
-    Timestamp firstTimeLogin;
 
     public User(User user) {
     }

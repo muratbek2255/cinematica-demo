@@ -15,6 +15,4 @@ public class DeviceInfo {
     private String deviceId;
 
     private DeviceType deviceType;
-
-    private String notificationToken;
 }

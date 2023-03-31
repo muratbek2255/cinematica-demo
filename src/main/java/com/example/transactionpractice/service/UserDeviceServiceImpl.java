@@ -5,6 +5,7 @@ import com.example.transactionpractice.entity.UserDevice;
 import com.example.transactionpractice.entity.token.RefreshToken;
 import com.example.transactionpractice.exception.TokenRefreshException;
 import com.example.transactionpractice.repository.UserDeviceRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,6 @@ public class UserDeviceServiceImpl implements UserDeviceService {
 
         userDevice.setDeviceId(deviceInfo.getDeviceId());
         userDevice.setDeviceType(deviceInfo.getDeviceType());
-        userDevice.setNotificationToken(deviceInfo.getNotificationToken());
         userDevice.setIsRefreshActive(true);
 
         return userDevice;
@@ -48,10 +48,12 @@ public class UserDeviceServiceImpl implements UserDeviceService {
     @Override
     public void verifyRefreshAvailability(RefreshToken refreshToken) {
         UserDevice userDevice = findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new TokenRefreshException(refreshToken.getToken(), "Устройство для соответствующего токена не найдено. Пожалуйста, войдите снова"));
+                .orElseThrow(() -> new TokenRefreshException(refreshToken.getToken(),
+                        "Устройство для соответствующего токена не найдено. Пожалуйста, войдите снова"));
 
         if (!userDevice.getIsRefreshActive()) {
-            throw new TokenRefreshException(refreshToken.getToken(), "Обновление заблокировано для устройства. Пожалуйста, войдите через другое устройство");
+            throw new TokenRefreshException(refreshToken.getToken(),
+                    "Обновление заблокировано для устройства. Пожалуйста, войдите через другое устройство");
         }
     }
 }

@@ -37,7 +37,7 @@ public class RefreshToken extends DateAudit {
     @Column(name = "refresh_count")
     Long refreshCount;
 
-    @Column(name = "expiry_db", nullable = false)
+    @Column(name = "expiry_dt", nullable = false)
     Instant expiryDate;
 
     public void incrementRefreshCount() {

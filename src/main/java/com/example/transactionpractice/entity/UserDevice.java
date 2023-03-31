@@ -32,7 +32,7 @@ public class UserDevice extends DateAudit {
     @Enumerated(value = EnumType.STRING)
     DeviceType deviceType;
 
-    @Column(name = "notification_token")
+    @Column(name = "notication_token")
     String notificationToken;
 
     @Column(name = "device_id", nullable = false)

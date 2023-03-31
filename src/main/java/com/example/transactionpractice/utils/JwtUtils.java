@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -21,7 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 
-@Service
+@Component
 public class JwtUtils {
 
     @Value("${secret_key}")
@@ -29,9 +30,12 @@ public class JwtUtils {
 
     private final UserRepository userRepository;
 
+    private final long jwtExpirationInMs;
+
     @Autowired
-    public JwtUtils(UserRepository userRepository) {
+    public JwtUtils(UserRepository userRepository, @Value("${app.jwt.expiration}") long jwtExpirationInMs) {
         this.userRepository = userRepository;
+        this.jwtExpirationInMs = jwtExpirationInMs;
     }
 
     public String extractUsername(String token) {
@@ -92,4 +96,7 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    public long getExpiryDuration() {
+        return jwtExpirationInMs;
+    }
 }
