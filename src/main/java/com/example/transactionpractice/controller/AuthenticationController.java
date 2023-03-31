@@ -5,7 +5,7 @@ import com.example.transactionpractice.dto.AuthenticationRequest;
 import com.example.transactionpractice.dto.AuthenticationResponse;
 import com.example.transactionpractice.dto.RegistrationRequest;
 import com.example.transactionpractice.service.AuthenticationService;
-import com.example.transactionpractice.service.JwtService;
+import com.example.transactionpractice.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
     private final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
-    private final JwtService jwtService;
+    private final JwtUtils jwtUtils;
 
     @Autowired
-    public AuthenticationController(AuthenticationService authenticationService, JwtService jwtService) {
+    public AuthenticationController(AuthenticationService authenticationService, JwtUtils jwtUtils) {
         this.authenticationService = authenticationService;
-        this.jwtService = jwtService;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/register")

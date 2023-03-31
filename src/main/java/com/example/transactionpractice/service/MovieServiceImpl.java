@@ -4,6 +4,7 @@ import com.example.transactionpractice.dto.LikeDto;
 import com.example.transactionpractice.repository.MovieRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +16,12 @@ public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
 
+    private final StreamBridge streamBridge;
+
     @Autowired
-    public MovieServiceImpl(MovieRepository movieRepository) {
+    public MovieServiceImpl(MovieRepository movieRepository, StreamBridge streamBridge) {
         this.movieRepository = movieRepository;
+        this.streamBridge = streamBridge;
     }
 
     @Retryable
@@ -32,5 +36,9 @@ public class MovieServiceImpl implements MovieService {
                 movieRepository.save(movie);
             }, () -> log.info("Movie {} not found"));
         }
+    }
+
+    public void createTaskToAddLikes(LikeDto likes) {
+        streamBridge.send("likesProducer-out-0", likes);
     }
 }

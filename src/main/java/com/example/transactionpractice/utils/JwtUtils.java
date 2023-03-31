@@ -1,7 +1,8 @@
-package com.example.transactionpractice.service;
+package com.example.transactionpractice.utils;
 
 
 import com.example.transactionpractice.repository.UserRepository;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,7 +22,7 @@ import java.util.function.Function;
 
 
 @Service
-public class JwtService {
+public class JwtUtils {
 
     @Value("${secret_key}")
     private String SECRET_KEY;
@@ -29,7 +30,7 @@ public class JwtService {
     private final UserRepository userRepository;
 
     @Autowired
-    public JwtService(UserRepository userRepository) {
+    public JwtUtils(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

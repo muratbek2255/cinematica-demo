@@ -7,6 +7,7 @@ import com.example.transactionpractice.dto.AuthenticationResponse;
 import com.example.transactionpractice.entity.User;
 import com.example.transactionpractice.entity.UserRole;
 import com.example.transactionpractice.repository.UserRepository;
+import com.example.transactionpractice.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,16 +22,16 @@ public class AuthenticationService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final JwtService jwtService;
+    private final JwtUtils jwtUtils;
 
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService,
+    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils,
                                  AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
+        this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
     }
 
@@ -45,7 +46,7 @@ public class AuthenticationService {
 
         userRepository.save(user);
 
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtUtils.generateToken(user);
 
         AuthenticationResponse authenticationResponse = new AuthenticationResponse(
                 jwtToken
@@ -62,7 +63,7 @@ public class AuthenticationService {
 
         var user = userRepository.findByPhoneNumber(authenticationRequest.getUsername());
 
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtUtils.generateToken(user);
 
         AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwtToken);
 

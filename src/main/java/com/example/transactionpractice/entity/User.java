@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -36,19 +37,32 @@ public class User implements UserDetails {
     String password;
 
     @Column(name = "role_user")
+    @Enumerated(value = EnumType.STRING)
     UserRole userRole;
 
-    @Column(name = "credentialsExpiryDate")
+    @Column(name = "created_at")
+    Timestamp createdAt;
+
+    @Column(name = "credentials_expiry_date")
     LocalDateTime credentialsExpiryDate;
 
-    @Column(name = "isAccountExpired")
+    @Column(name = "is_account_expired")
     Boolean isAccountExpired;
 
-    @Column(name = "isAccountLocked")
+    @Column(name = "is_account_locked")
     Boolean isAccountLocked;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean active;
 
     @Column(name = "enabled")
     Boolean enabled;
+
+    @Column(name = "is_twilio_verified")
+    Boolean isTwilioVerified;
+
+    @Column(name = "first_time_login")
+    Timestamp firstTimeLogin;
 
 
     @Override
@@ -56,6 +70,14 @@ public class User implements UserDetails {
 
         return List.of(new SimpleGrantedAuthority(this.userRole.name()));
 
+    }
+
+    public void markVerificationConfirmed() {
+        setTwilioVerified(true);
+    }
+
+    private void setTwilioVerified(boolean isTwilioVerified) {
+        this.isTwilioVerified = isTwilioVerified;
     }
 
     @Override
@@ -87,4 +109,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
+
+
 }
