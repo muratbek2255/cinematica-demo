@@ -10,7 +10,7 @@ import com.example.transactionpractice.exception.TokenRefreshException;
 import com.example.transactionpractice.exception.UserLogoutException;
 import com.example.transactionpractice.repository.RefreshTokenRepository;
 import com.example.transactionpractice.repository.UserRepository;
-import com.example.transactionpractice.utils.CurrentUser;
+import com.example.transactionpractice.CurrentUser;
 import com.example.transactionpractice.utils.JwtUtils;
 
 import lombok.extern.slf4j.Slf4j;

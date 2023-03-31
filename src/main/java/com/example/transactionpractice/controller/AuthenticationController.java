@@ -1,6 +1,7 @@
 package com.example.transactionpractice.controller;
 
 
+import com.example.transactionpractice.CurrentUser;
 import com.example.transactionpractice.dto.*;
 import com.example.transactionpractice.entity.User;
 import com.example.transactionpractice.entity.token.RefreshToken;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,13 +50,15 @@ public class AuthenticationController {
 
         User user = (User) authentication.getPrincipal();
 
-        return ResponseEntity.status(201).body(authenticationService.createAndPersistRefreshTokenForDevice(authentication, authenticationRequest)
+        return ResponseEntity.status(201).body(authenticationService.createAndPersistRefreshTokenForDevice(authentication,
+                        authenticationRequest)
                 .map(RefreshToken::getToken)
                 .map(refreshToken -> {
                     String jwtToken = jwtUtils.generateToken(user);
                     String refreshToken2 = authenticationService.generateToken(user);
                     return new AuthenticationResponse(jwtToken, refreshToken);
-                }).orElseThrow(() -> new UserLoginException("Couldn't create refresh token for: [" + authenticationRequest + "]")));
+                }).orElseThrow(() -> new UserLoginException("Couldn't create refresh token for: " +
+                        "[" + authenticationRequest + "]")));
     }
 
     @PostMapping("/refresh")
@@ -65,8 +69,18 @@ public class AuthenticationController {
                 .map(updatedToken -> {
                     String refreshToken = tokenRefreshRequest.getRefreshToken();
                     log.info("Created new Jwt Auth token: " + updatedToken);
-                    return ResponseEntity.ok(new JwtAuthenticationResponse(updatedToken, refreshToken, jwtUtils.getExpiryDuration()));
+                    return ResponseEntity.ok(new JwtAuthenticationResponse(updatedToken, refreshToken,
+                            jwtUtils.getExpiryDuration()));
                 })
-                .orElseThrow(() -> new TokenRefreshException(tokenRefreshRequest.getRefreshToken(), "Unexpected error during token refresh. Please logout and login again.")).getBody();
+                .orElseThrow(() -> new TokenRefreshException(tokenRefreshRequest.getRefreshToken(),
+                        "Unexpected error during token refresh. Please logout and login again.")).getBody();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity logout(@CurrentUser User user, @Param(value = "The LogOutRequest payload")
+     @Valid @RequestBody LogOutRequest logOutRequest) {
+        authenticationService.logoutUser(user, logOutRequest);
+        Object credentials = SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        return ResponseEntity.ok(new ApiResponse(true, "Log out successful"));
     }
 }

@@ -1,13 +1,10 @@
 package com.example.transactionpractice.scheduler;
 
 
-import com.example.transactionpractice.repository.PaymentRepository;
-
 import lombok.extern.slf4j.Slf4j;
 
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,6 +22,6 @@ public class TaskSchedulerForSendMessageToKafkaPaymentStatus {
     )
     public void scheduledSelectFromDBTask(String data) throws InterruptedException {
 
-        log.info("Checking status of payment! {}" + data);
+        log.info("Checking status of payment!" + data);
     }
 }

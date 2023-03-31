@@ -39,6 +39,6 @@ public class MovieServiceImpl implements MovieService {
     }
 
     public void createTaskToAddLikes(LikeDto likes) {
-        streamBridge.send("likesProducer-out-0", likes);
+        streamBridge.send("cinematica", likes);
     }
 }
