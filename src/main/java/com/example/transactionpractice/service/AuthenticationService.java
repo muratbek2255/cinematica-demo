@@ -87,12 +87,14 @@ public class AuthenticationService {
         return authenticationResponse;
     }
 
+
     public Authentication authentication(AuthenticationRequest authenticationRequest) {
 
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                 authenticationRequest.getPassword()));
 
     }
+
 
     public Optional<String> refreshJwtToken(TokenRefreshRequest tokenRefreshRequest) {
         String requestRefreshToken = tokenRefreshRequest.getRefreshToken();
@@ -111,6 +113,7 @@ public class AuthenticationService {
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Missing refresh token in database.Please login again"));
     }
 
+
     public Optional<RefreshToken> createAndPersistRefreshTokenForDevice(Authentication authentication, AuthenticationRequest loginRequest) {
         User currentUser = (User) authentication.getPrincipal();
         String deviceId = loginRequest.getDeviceInfo().getDeviceId();
@@ -128,9 +131,23 @@ public class AuthenticationService {
         return Optional.ofNullable(refreshToken);
     }
 
+
     public String generateToken(User user) {
         return jwtUtils.generateToken(user);
     }
+
+
+    public String changePassword(PasswordRequest passwordRequest, long id) {
+
+        User user = userRepository.getById(id);
+
+        user.setPassword(passwordRequest.getPassword());
+
+        userRepository.save(user);
+
+        return "Change Password";
+    }
+
 
     public void logoutUser(@CurrentUser User currentUser, LogOutRequest logOutRequest) {
         String deviceId = logOutRequest.getDeviceInfo().getDeviceId();

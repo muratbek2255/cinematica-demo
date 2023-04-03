@@ -42,6 +42,7 @@ public class AuthenticationController {
         return ResponseEntity.status(201).body(authenticationService.registrationUser(registerRequest));
     }
 
+
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest
                                                                        authenticationRequest) {
@@ -55,7 +56,7 @@ public class AuthenticationController {
                 .map(RefreshToken::getToken)
                 .map(refreshToken -> {
                     String jwtToken = jwtUtils.generateToken(user);
-                    String refreshToken2 = authenticationService.generateToken(user);
+                    String refreshToken2 = jwtUtils.generateToken(user);
                     return new AuthenticationResponse(jwtToken, refreshToken);
                 }).orElseThrow(() -> new UserLoginException("Couldn't create refresh token for: " +
                         "[" + authenticationRequest + "]")));
